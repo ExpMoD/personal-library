@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<books>
+    <book name='Гарри Поттер и узник Азкабана' author='Роулинг Джоан Кэтлин' date-read='02.11.2015'></book>
+    <book name='Гарри Поттер и Кубок огня' author='Роулинг Джоан Кэтлин' date-read='28.06.2013'></book>
+</books>
