@@ -42,8 +42,8 @@ class ImportFromXml extends CI_Controller
                     $countAddBooks = 0;
                     $allBooksCount = count($xmlArray['BOOKS']['BOOK']);
 
-                    print_r($xmlArray);
-                    if (is_array($xmlArray['BOOKS']['BOOK'][0])) {
+
+                    if (isset($xmlArray['BOOKS']['BOOK'][0])) {
                         foreach ($xmlArray['BOOKS']['BOOK'] as $book) {
                             $newBook = array(
                                 'name' => $book['NAME'],
