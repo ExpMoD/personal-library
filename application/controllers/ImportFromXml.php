@@ -33,44 +33,24 @@ class ImportFromXml extends CI_Controller
             $tmpName = $_FILES['xml-file']['tmp_name'];
 
             if (is_uploaded_file($tmpName)) {
-                $xmlFile = file_get_contents($_FILES['xml-file']['tmp_name']);
+                $xmlFile = simplexml_load_file($_FILES['xml-file']['tmp_name']);
 
-                $xmlArray = XMLtoArray($xmlFile);
+                $countAddBooks = 0;
+                $countAllBooks = count($xmlFile->book);
 
+                foreach ($xmlFile->book as $book) {
+                    $newBook = array(
+                        'name' => $book['name'],
+                        'author' => $book['author'],
+                        'date-read' => date("Y-m-d", strtotime($book['date-read'])),
+                        'cover-path' => 0
+                    );
 
-                if (!empty($xmlArray) && isset($xmlArray['BOOKS']['BOOK'])) {
-                    $countAddBooks = 0;
-                    $allBooksCount = count($xmlArray['BOOKS']['BOOK']);
-
-
-                    if (isset($xmlArray['BOOKS']['BOOK'][0])) {
-                        foreach ($xmlArray['BOOKS']['BOOK'] as $book) {
-                            $newBook = array(
-                                'name' => $book['NAME'],
-                                'author' => $book['AUTHOR'],
-                                'date-read' => date("Y-m-d", strtotime($book['DATE-READ'])),
-                                'cover-path' => 0
-                            );
-
-                            if ($this->DbHandlers->addBook($newBook))
-                                $countAddBooks++;
-                        }
-                    } else {
-                        $newBook = array(
-                            'name' => $xmlArray['BOOKS']['BOOK']['NAME'],
-                            'author' => $xmlArray['BOOKS']['BOOK']['AUTHOR'],
-                            'date-read' => date("Y-m-d", strtotime($xmlArray['BOOKS']['BOOK']['DATE-READ'])),
-                            'cover-path' => 0
-                        );
-
-                        $allBooksCount = 1;
-                        if ($this->DbHandlers->addBook($newBook))
-                            $countAddBooks++;
-                    }
-
-
-                    redirect('importFromXml/success?all=' . $allBooksCount . '&add=' . $countAddBooks);
+                    if ($this->DbHandlers->addBook($newBook))
+                        $countAddBooks++;
                 }
+
+                redirect('importFromXml/success?all=' . $countAllBooks . '&add=' . $countAddBooks);
             }
 
             redirect('importFromXml/error');
